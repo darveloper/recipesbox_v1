@@ -1,5 +1,9 @@
 from django.urls import path
 from . import views
+from recipe.views import (
+     add_favorite_view,
+     favorites_view,
+)
 
 app_name = 'recipes'
 
@@ -18,4 +22,6 @@ urlpatterns = [
     path('signup/', views.register_view, name='register_page'),
     path('userpage/', views.userpage, name='userpage'),
     path('denied/', views.accessdenied, name='denied'),
+    path('add_favorite/<int:id>', views.add_favorite_view, name='add_favorite'),
+    path('favorites/<int:id>/', views.favorites_view, name='favorites'),
 ]

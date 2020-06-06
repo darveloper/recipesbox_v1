@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from .decorators import unauthenticated_user, allowed_users
-from .models import Recipe, Author
+from recipe.models import Recipe, Author
 from .forms import RecipeAddForm, AuthorAddForm, LoginForm, RegisterUserForm
 from django.contrib.auth.models import User
 
@@ -149,3 +149,14 @@ def userpage(request):
 def accessdenied(request):
     html = "recipe/accessdenied.html"
     return render(request, html)
+
+def add_favorite_view(request, id):
+    current_user = Author.objects(name=request.user)
+    recipe_to_faovrite = Recipe.objects.get(id=id)
+    current_user.favorites.add(recipe_to_faovrite)
+    current_user.save()
+    return HttpResponseRedirect(reverse('home'))
+
+def favorites_view(request, id):
+    current_user = Author.objects.get(id=id)
+    return render(request, 'favorites.html', {"favorites":current_user.favorites.all()})
