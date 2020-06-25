@@ -23,5 +23,5 @@ urlpatterns = [
     path('userpage/', views.userpage, name='userpage'),
     path('denied/', views.accessdenied, name='denied'),
     path('add_favorite/<int:id>', views.add_favorite_view, name='add_favorite'),
-    path('favorites/<int:id>/', views.favorites_view, name='favorites'),
+    path('favorites/', views.favorites_view, name='favorites'),
 ]

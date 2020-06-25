@@ -11,6 +11,10 @@ class RecipeAddForm(forms.ModelForm):
         fields = ['author', 'title', 'description',
                   'time_required', 'instructions']
 
+class RecipeEditForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ['title', 'description', 'time_required', 'instructions']
 
 class AuthorAddForm(forms.ModelForm):
     class Meta:

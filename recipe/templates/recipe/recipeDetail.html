@@ -9,6 +9,9 @@
  <div class="card-body">
     <h5 class="card-title">{{ recipe.title }}</h5>
     <p class="card-text">{{ recipe.description }}</p>
+    {% if user.is_authenticated %}
+      <a href="/add_favorite/{{recipe.id}}"><button>Add To Favorites</button></a>
+    {% endif %}
   </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item">How to make melt in your mouth chicken:</li>
@@ -27,6 +30,9 @@
     >
     <a href="{%url 'recipes:index'%}" class="card-link">Go home</a>
   </div>
+  {% if user.is_authenticated %}
+  <a href="/recipe/update/{{recipe.id}}"><button>Update Recipe</button></a>
+  {% endif %}
 </div>
 
 {% endblock %}

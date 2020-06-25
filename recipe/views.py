@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from .decorators import unauthenticated_user, allowed_users
 from recipe.models import Recipe, Author
-from .forms import RecipeAddForm, AuthorAddForm, LoginForm, RegisterUserForm
+from .forms import RecipeAddForm, AuthorAddForm, LoginForm, RegisterUserForm, RecipeEditForm
 from django.contrib.auth.models import User
 
 
@@ -120,13 +120,14 @@ def delete_recipe(request, recipe_id):
 
 
 @login_required()
+@allowed_users(allowed_roles=['author'])
 def update_recipe(request, recipe_id):
     html = "generic_form.html"
     recipe = Recipe.objects.get(id=recipe_id)
 
-    form = RecipeAddForm(instance=recipe)
+    form = RecipeEditForm(instance=recipe)
     if request.method == "POST":
-        form = RecipeAddForm(request.POST, instance=recipe)
+        form = RecipeEditForm(request.POST, instance=recipe)
         if form.is_valid():
             form.save()
         return HttpResponseRedirect(reverse("recipes:index"))
@@ -143,7 +144,7 @@ def userpage(request):
     db_user = Author.objects.get(user=curr_user)
     recipe_users = Recipe.objects.filter(author=db_user)
 
-    return render(request, html, {'user': users, 'recipe_users': recipe_users})
+    return render(request, html, {'users': users, 'recipe_users': recipe_users})
 
 
 def accessdenied(request):
@@ -151,12 +152,15 @@ def accessdenied(request):
     return render(request, html)
 
 def add_favorite_view(request, id):
-    current_user = Author.objects(name=request.user)
+    current_user = request.user.author
     recipe_to_faovrite = Recipe.objects.get(id=id)
     current_user.favorites.add(recipe_to_faovrite)
     current_user.save()
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(reverse('recipes:index'))
 
-def favorites_view(request, id):
-    current_user = Author.objects.get(id=id)
-    return render(request, 'favorites.html', {"favorites":current_user.favorites.all()})
+
+def favorites_view(request):
+    current_user = request.user.author
+    favorites = current_user.favorites.all()
+    current_user.save()
+    return render(request, 'recipe/favorites.html', {'favorites': favorites})
